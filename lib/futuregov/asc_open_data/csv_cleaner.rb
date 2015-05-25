@@ -7,7 +7,11 @@ module Futuregov
       attr_accessor :config
 
       class Config
-        attr_accessor :normalise_headers, :columns_to_delete, :row_filters, :normalisers
+        attr_accessor :normalise_headers,
+          :columns_to_delete,
+          :row_filters,
+          :normalisers,
+          :sanitisers
       end
 
       def initialize(csv, config)
@@ -23,6 +27,7 @@ module Futuregov
         delete_columns(config.columns_to_delete)
         filter_rows(config.row_filters)
         normalise_rows(config.normalisers)
+        sanitise_rows(config.sanitisers)
       end
 
       def delete_columns(names)
@@ -49,6 +54,14 @@ module Futuregov
                 row[field] = action.call(row, field, value)
               end
             end
+          end
+        end
+      end
+
+      def sanitise_rows(sanitisers)
+        table.each do |row|
+          sanitisers.each do |col, method|
+            row[col] = method.call(row, col, row[col])
           end
         end
       end
