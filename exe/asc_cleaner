@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "commander/import"
+require "futuregov/asc_open_data"
+
+program :version, "0.0.1"
+program :description, "Cleans CSV data for Adult Social Care Open Data project."
+
+command :clean do |c|
+  c.syntax = "asc_cleaner clean <council> <dataset> <csv-path>"
+  c.description = "Output a cleaned CSV to standard out for <council> and <dataset>."
+  c.example "cleaning", "asc_cleaner clean Devon HomeVacancies data/home_vacancies.csv"
+  c.action do |args, options|
+    if args.size != 3
+      say "Incorrect number of arguments."
+      say "Usage: asc_cleaner clean <council> <dataset> <csv-path>"
+      exit 1
+    end
+
+    council, dataset, path = *args
+
+    config = Futuregov::ASCOpenData::CSVCleaner::Config.new
+
+    configurator = Futuregov::ASCOpenData::Configs::const_get(council)::const_get(dataset)
+    configurator.configure!(config)
+
+    csv = CSV.open(path, headers: true)
+    cleaner = Futuregov::ASCOpenData::CSVCleaner.new(csv, config)
+    cleaner.clean!
+
+    STDOUT.write(cleaner.table.to_s)
+  end
+end
