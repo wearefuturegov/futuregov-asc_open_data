@@ -1,7 +1,9 @@
 require "futuregov/asc_open_data/version"
 
 module Futuregov
-  module AscOpenData
-    # Your code goes here...
+  module ASCOpenData
   end
 end
+
+require "futuregov/asc_open_data/csv_cleaner"
+require "futuregov/asc_open_data/configs/devon/home_vacancies"
