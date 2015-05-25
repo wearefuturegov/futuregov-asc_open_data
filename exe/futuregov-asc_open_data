@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+
+require "futuregov/asc_open_data"
