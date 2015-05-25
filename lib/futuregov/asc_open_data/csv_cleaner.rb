@@ -41,7 +41,9 @@ module Futuregov
           next if normaliser.nil?
           normaliser.each do |k, action|
             if k === value
-              if String === action
+              if action.nil?
+                row[field] = nil
+              elsif String === action
                 row[field] = action 
               elsif Proc === action 
                 row[field] = action.call(row, field, value)
