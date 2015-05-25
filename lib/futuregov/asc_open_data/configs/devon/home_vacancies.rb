@@ -3,6 +3,8 @@ module Futuregov
     module Configs
       module Devon
         module HomeVacancies
+          include Common
+
           FIELD_NAMES = {
             "" => "area",
             /carefirst/ => "carefirst_id",
@@ -12,26 +14,8 @@ module Futuregov
           }
 
           def self.configure!(config)
-            config.normalise_headers = -> (field, field_info) do
-              converted = field.downcase.gsub(' ', '_')
-              FIELD_NAMES.each do |key, value|
-                converted = value if key === converted
-              end
-              converted
-            end
-
+            config.normalise_headers = HEADER_NORMALISERS[:default].call(FIELD_NAMES)
             config.columns_to_delete = [nil, "carefirst_id"]
-            trimmer = {
-              /.*/ => -> (row, field, value) { row[field] = value.strip }
-            }
-            join_spaces = {
-              /.*/ => -> (row, field, value) { row[field] = value.split(" ").join(",") }
-            }
-            convert_dotted_dates = {
-              /([0-9]{2})\.([0-9]{2})\.([0-9]{2})/ => -> (row, field, value) {
-                row[field] = "%s/%s/20%s" % /([0-9]{2})\.([0-9]{2})\.([0-9]{2})/.match(value)[1..3]
-              }
-            }
             normalise_vacancies = {
               "FULL" => 0,
               /no vacancies/i => 0,
@@ -40,9 +24,9 @@ module Futuregov
               /.*/ => -> (row, field, value) { row[field] = value.to_i }
             }
             config.normalisers = {
-              "contact" => trimmer,
-              "telephone" => trimmer,
-              "email_address" => trimmer.merge(
+              "contact" => FIELD_NORMALISERS[:trimmer],
+              "telephone" => FIELD_NORMALISERS[:trimmer],
+              "email_address" => FIELD_NORMALISERS[:trimmer].merge(
                 /.*/ => -> (row, field, value) {
                   row[field] = value.split(" ").reject {|v| !v.include?("@") }.join(",")
                 }
@@ -52,7 +36,7 @@ module Futuregov
                 "NR" => "",
                 "N/R" => "",
                 "No Reply" => ""
-              }.merge(convert_dotted_dates),
+              }.merge(FIELD_NORMALISERS[:convert_dotted_dates]),
               "no_of_residential_vacancies" => normalise_vacancies,
               "no_of_nursing_vacancies" => normalise_vacancies,
               "no_of_short_stay_vacancies" => normalise_vacancies
