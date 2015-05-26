@@ -12,6 +12,14 @@ module Futuregov
           :row_filters,
           :normalisers,
           :sanitisers
+
+        def initialize
+          @normalise_headers = {}
+          @columns_to_delete = {}
+          @row_filters = {}
+          @normalisers = {}
+          @sanitisers = {}
+        end
       end
 
       def initialize(csv, config)
