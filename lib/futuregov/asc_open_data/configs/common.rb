@@ -30,6 +30,19 @@ module Futuregov
             "-" => nil
           }
         }
+
+        FIELD_SANITISERS = {
+          small_numbers: -> (min) do
+            -> (row, field, value) do
+              begin
+                val_i = Integer(value)
+                (val_i == 0 || val_i >= min) ? val_i : min
+              rescue
+                value
+              end
+            end
+          end
+        }
       end
     end
   end

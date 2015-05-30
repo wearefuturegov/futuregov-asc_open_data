@@ -5,8 +5,7 @@ module Futuregov
         module MICQCCompliance
           include Common
 
-          FIELD_NAMES = {
-          }
+          FIELD_NAMES = {}
 
           DELETE_COLUMNS = [
             "new_provider",  # Column is empty
@@ -19,7 +18,7 @@ module Futuregov
             "count"  # Calculated column
           ]
 
-          SMALL_NUMBER_MIN = 5
+          SMALL_NUMBER_MIN = 8
           SMALL_NUMBER_COLUMNS = [
             "nursing_chc_client_count",
             "all_chc_client_count",
@@ -41,16 +40,8 @@ module Futuregov
               "meets_dcc_quality_threshold" => -> (row, field, value) { row[field] = value[0] }
             }
             config.sanitisers = SMALL_NUMBER_COLUMNS.each_with_object({}) do |col, h|
-              h[col] = -> (row, field, value) do 
-                val_i = value.to_i
-                if val_i == 0 || val_i >= SMALL_NUMBER_MIN
-                  val_i
-                else
-                  SMALL_NUMBER_MIN
-                end
-              end
+              h[col] = FIELD_SANITISERS[:small_numbers].call(SMALL_NUMBER_MIN)
             end
-            config.row_filters = {}
           end
         end
       end
