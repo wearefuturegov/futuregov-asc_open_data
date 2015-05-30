@@ -14,7 +14,7 @@ module Futuregov
           :sanitisers
 
         def initialize
-          @normalise_headers = {}
+          @normalise_headers = false
           @columns_to_delete = {}
           @row_filters = {}
           @normalisers = {}
@@ -28,7 +28,9 @@ module Futuregov
       end
 
       def clean!
-        csv.header_convert(&config.normalise_headers)
+        if config.normalise_headers
+          csv.header_convert(&config.normalise_headers)
+        end
 
         @table = csv.read
 
