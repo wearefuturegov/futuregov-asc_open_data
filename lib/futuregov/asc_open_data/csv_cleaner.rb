@@ -11,7 +11,8 @@ module Futuregov
           :columns_to_delete,
           :row_filters,
           :normalisers,
-          :sanitisers
+          :sanitisers,
+          :preparsers
 
         def initialize
           @normalise_headers = false
@@ -19,6 +20,7 @@ module Futuregov
           @row_filters = {}
           @normalisers = {}
           @sanitisers = {}
+          @preparsers = {}
         end
       end
 
@@ -28,6 +30,8 @@ module Futuregov
       end
 
       def clean!
+        preparse_file(csv, config.preparsers)
+
         if config.normalise_headers
           csv.header_convert(&config.normalise_headers)
         end
@@ -80,6 +84,10 @@ module Futuregov
         filters.each do |_, filter|
           table.delete_if(&filter)
         end
+      end
+
+      def preparse_file(file, preparsers)
+        preparsers.each {|_, p| p.call(file.to_io) }
       end
     end
   end
