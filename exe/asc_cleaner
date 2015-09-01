@@ -26,7 +26,7 @@ command :clean do |c|
     configurator = Futuregov::ASCOpenData::Configs::const_get(council)::const_get(dataset)
     configurator.configure!(config)
 
-    csv = CSV.open(path, headers: true)
+    csv = CSV.open(path, headers: true, encoding: "ISO-8859-1:UTF-8")
     cleaner = Futuregov::ASCOpenData::CSVCleaner.new(csv, config)
     cleaner.clean!
 
