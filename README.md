@@ -18,6 +18,11 @@ For example:
 Which will use the HomeVacancies configuration for Devon to clean the given CVS
 and output it to standard out.
 
+Note that the command sends output to standard out, which means the data will be
+displayed on your terminal. To save the data to a new file, use the redirect operator, like so:
+
+    $ asc_cleaner Devon HomeVacancies homevacancies-20150528.csv > homevacancies-20150528-clean.csv
+
 ## Available Dataset Processors
 
 The **dataset** parameter can be one of the following. The supplied CSV file needs
