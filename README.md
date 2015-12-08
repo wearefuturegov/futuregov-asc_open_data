@@ -9,7 +9,7 @@ library in a larger application.
 
 ## Usage
 
-    $ asc_cleaner <council> <dataset> <csvpath>
+    $ asc_cleaner <council> <dataset> <csv_path>
 
 For example:
 
@@ -17,3 +17,16 @@ For example:
 
 Which will use the HomeVacancies configuration for Devon to clean the given CVS
 and output it to standard out.
+
+## Available Dataset Processors
+
+The **dataset** parameter can be one of the following. The supplied CSV file needs
+to contain the correct headings (based on the originally-supplied files) for dataset
+rules to be applied correctly.
+
+### Devon
+
+* DelayedTransfersOfCare – for "devon_dtoc_*.csv".
+* HomeVacancies – for "devon_home_vacancies-*.csv".
+* MarketTownCareHomeModel – for "devon_resnurs_model_*.csv".
+* MICQCCompliance – for "devon_mi_cqc_compliance-*.csv"
