@@ -12,7 +12,8 @@ module Futuregov
           :row_filters,
           :normalisers,
           :sanitisers,
-          :preparsers
+          :preparsers,
+          :row_sep
 
         def initialize
           @normalise_headers = false
@@ -27,6 +28,7 @@ module Futuregov
       def initialize(csv, config)
         @csv = csv
         @config = config
+        @config.row_sep = @csv.row_sep
       end
 
       def clean!
@@ -63,8 +65,8 @@ module Futuregov
               if action.nil?
                 row[field] = nil
               elsif String === action
-                row[field] = action 
-              elsif Proc === action 
+                row[field] = action
+              elsif Proc === action
                 row[field] = action.call(row, field, value)
               end
             end

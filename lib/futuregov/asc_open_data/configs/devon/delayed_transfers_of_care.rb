@@ -8,6 +8,7 @@ module Futuregov
           def self.configure!(config)
             config.preparsers[:trim_top] = -> (file) do
               line_no = 0
+              $INPUT_RECORD_SEPARATOR = config.row_sep
               until file.readline =~ /^Year,/ do
                 line_no += 1
               end
